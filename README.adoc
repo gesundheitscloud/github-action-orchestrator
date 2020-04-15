@@ -10,12 +10,11 @@ Scripts have been developed against Kotlin 1.3.72.
 
 You need to create a GitHub personal access token with repo permissions and set it as environment variable in your system: `GITHUB_ACTIONS_RUNNER_REGISTRATION_TOKEN={token}`
 
-
 == How to use and add a repository?
 
 Edit the script and add the desired *organization* and *repository names* that you want to setup.
 
-Then just run the orchestrator: `./github-action-orchestrator.kts`
+Then just run the orchestrator: `./github-action-orchestrator.main.kts`
 
 It will create a new folder `github-runners` where all repository runners could be found. Every mentioned runner will be configured as a service.
 
