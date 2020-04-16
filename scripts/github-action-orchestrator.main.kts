@@ -1,6 +1,5 @@
 #!/usr/bin/env kotlin
 
-@file:Repository("https://jcenter.bintray.com")
 @file:DependsOn("org.jetbrains.kotlin:kotlin-script-runtime:1.3.72")
 @file:DependsOn("org.jetbrains.kotlin:kotlin-main-kts:1.3.72")
 @file:DependsOn("eu.jrie.jetbrains:kotlin-shell-core:0.2.1")
@@ -12,7 +11,7 @@
 @file:DependsOn("io.ktor:ktor-client-json:1.3.2")
 @file:DependsOn("io.ktor:ktor-client-gson:1.3.2")
 @file:CompilerOptions("-Xopt-in=kotlin.RequiresOptIn")
-
+@file:CompilerOptions("-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
 
 import eu.jrie.jetbrains.kotlinshell.shell.*
 import io.ktor.client.HttpClient
@@ -24,20 +23,34 @@ import kotlin.system.exitProcess
 
 
 // ### Data
-val organization = "organization"
+val organization = "gesundheitscloud"
 
 val repositories = listOf<GitHubRepository>(
-        GitHubRepository(organization, "repo-name")
+        // Apps
+        GitHubRepository(organization, "covhub-mobile"),
+        GitHubRepository(organization, "mobile-client-android"),
+        GitHubRepository(organization, "mobile-client-ios"),
+
+        // SDK Android
+        GitHubRepository(organization, "hc-sdk-android"),
+        GitHubRepository(organization, "hc-sdk-android-integration"),
+
+        // SDK - iOS
+        GitHubRepository(organization, "hc-sdk-ios"),
+        GitHubRepository(organization, "hc-sdk-ios-integration"),
+        GitHubRepository(organization, "hc-fhir-profiles-ios"),
+        GitHubRepository(organization, "hc-fhir-ios"),
+        GitHubRepository(organization, "hc-sdk-util-ios")
 )
 
 val reposToRemove = listOf<GitHubRepository>(
-        GitHubRepository(organization, "repo-name")
+        // empty
 )
 
 
 // constants
 val runnerVersion = "2.168.0"
-val runnerFolder = "github-runners"
+val runnerFolder = "action-runners"
 val runnerUrl = "https://github.com/actions/runner/releases/download/v${runnerVersion}/actions-runner-osx-x64-${runnerVersion}.tar.gz"
 val runnerFile = "actions-runner-osx-x64-${runnerVersion}.tar.gz"
 
@@ -63,11 +76,11 @@ shell {
     for (repo in repositories) {
         println()
         println("------------>")
-        println("Processing repo:  ${repo.name}")
+        println("Processing repository to configure:  ${repo.name}")
         println("------------")
 
         if (dirExists(repo.name).not()) {
-            //installRunner(client, repo, accessToken)
+            installRunner(client, repo, accessToken)
         } else {
             println("Runner already installed!")
         }
@@ -78,11 +91,11 @@ shell {
     for (repo in reposToRemove) {
         println()
         println("------------>")
-        println("Processing repos to delets:  ${repo.name}")
+        println("Processing repository to delete:  ${repo.name}")
         println("------------")
 
         if (dirExists(repo.name)) {
-            //uninstallRunner(client, repo, accessToken)
+            uninstallRunner(client, repo, accessToken)
         } else {
             println("Runner already uninstalled!")
         }
@@ -92,6 +105,9 @@ shell {
 
     cd(up)
     client.close()
+
+    println("")
+    println("Finished successfully")
 }
 
 // #### Helper
