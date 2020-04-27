@@ -1,5 +1,7 @@
 #!/usr/bin/env kotlin
 
+@file:Repository("https://jcenter.bintray.com/")
+@file:Repository("https://dl.bintray.com/jakubriegel/kotlin-shell")
 @file:DependsOn("org.jetbrains.kotlin:kotlin-script-runtime:1.3.72")
 @file:DependsOn("org.jetbrains.kotlin:kotlin-main-kts:1.3.72")
 @file:DependsOn("eu.jrie.jetbrains:kotlin-shell-core:0.2.1")
